@@ -1,0 +1,10 @@
+{
+  "base_url": {
+    "description": "BaseUrl",
+    "type": "string"
+  },
+  "token": {
+    "description": "Token",
+    "type": "string"
+  }
+}
