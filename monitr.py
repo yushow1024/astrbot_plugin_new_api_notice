@@ -306,24 +306,24 @@ def format_notice_message(item: Dict[str, Any]) -> str:
     user_id = item.get("user_id")
     lines.append(f"  👤 用户：{username} (id={user_id})")
 
-    content = (item.get("content") or "").strip()
-    if content:
-        lines.append(f"  📝 说明：{content}")
-
-    # 消费类日志展示 token / 模型 / 用时 / 额度
-    if log_type == 2:
+    # 消费、错误 类日志展示 token / 模型
+    if log_type in (2, 5):
         token_name = item.get("token_name") or "-"
         model_name = item.get("model_name") or "-"
         channel_name = item.get("channel_name") or "-"
         is_stream = bool(item.get("is_stream"))
-        use_time = item.get("use_time") or 0
-        frt = get_first_token_latency(item)
 
         lines.append(f"  🔑 Token：{token_name}  ｜  🤖 模型：{model_name}")
         lines.append(
             f"  📡 渠道：{channel_name}  ｜  "
             f"模式：{'流式' if is_stream else '非流式'}"
         )
+
+    # 消费类日志展示 用时 / 额度
+    if log_type == 2:
+        use_time = item.get("use_time") or 0
+        frt = get_first_token_latency(item)
+
         lines.append(
             f"  ⏱️ 用时：{use_time}s"
             + (f"  ｜  首字：{frt}s" if frt is not None else "")
@@ -334,6 +334,11 @@ def format_notice_message(item: Dict[str, Any]) -> str:
             f"  📊 Tokens：prompt={prompt_tokens}, completion={completion_tokens}"
         )
         lines.append(f"  💸 消耗：{format_quota(item.get('quota'))}")
+
+    # 说明
+    content = (item.get("content") or "").strip()
+    if content:
+        lines.append(f"  📝 说明：{content}")
 
     request_id = item.get("request_id")
     if request_id:
