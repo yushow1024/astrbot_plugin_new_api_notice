@@ -259,7 +259,7 @@ def format_quota(quota: Any) -> str:
     if not isinstance(quota, (int, float)):
         return "-"
     # 1 美元 = 1_000_000 quota
-    usd = float(quota) / 1_000_000.0
+    usd = float(quota) / 500_000.0
     return f"＄{usd:.6f}"
 
 
